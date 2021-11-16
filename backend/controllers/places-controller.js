@@ -1,4 +1,5 @@
 const httpError = require("./../models/http-error");
+const { validationResult } = require("express-validator");
 
 let USERS_DATA = [
   {
@@ -39,7 +40,11 @@ exports.getPlacesByUser = (req, res, next) => {
   res.json({ sendData });
 };
 
-exports.createPlace = (req, res) => {
+exports.createPlace = (req, res, next) => {
+  const error = validationResult(req);
+  if (!error.isEmpty()) {
+    return next(new httpError("Invalid input ,please check your data", 422));
+  }
   const { id, title, description, coordinate, address, creator } = req.body;
   const data = {
     title,
