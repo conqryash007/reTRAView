@@ -1,4 +1,5 @@
 const httpError = require("./../models/http-error");
+const { validationResult } = require("express-validator");
 
 let USER_DUMMY = [
   {
@@ -17,7 +18,11 @@ exports.getUsers = (req, res) => {
   res.status(200).json({ users: USER_DUMMY });
 };
 
-exports.signUp = (req, res) => {
+exports.signUp = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(new httpError("Something wrong in the input field", 422));
+  }
   const { name, email, password } = req.body;
   const p = {
     name,

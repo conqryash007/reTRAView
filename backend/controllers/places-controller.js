@@ -60,7 +60,11 @@ exports.createPlace = (req, res, next) => {
   res.status(201).json({ data });
 };
 
-exports.updatePlaceById = (req, res) => {
+exports.updatePlaceById = (req, res, next) => {
+  const error = validationResult(req);
+  if (!error.isEmpty()) {
+    return next(new httpError("Invalid input ,please check your data", 422));
+  }
   const id = req.params.uid;
   const incData = req.body;
 
@@ -77,10 +81,12 @@ exports.updatePlaceById = (req, res) => {
   res.status(200).json({ place });
 };
 
-exports.deletePlaceById = (req, res) => {
+exports.deletePlaceById = (req, res, next) => {
   const id = req.params.uid;
   const indx = USERS_DATA.findIndex((curr) => curr.id === id);
-
+  if (indx === -1) {
+    return next(new httpError("id not found", 404));
+  }
   USERS_DATA.splice(indx, 1);
   res.status(200).json({ message: "deletion successful" });
 };

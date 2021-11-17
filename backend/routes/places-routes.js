@@ -17,7 +17,11 @@ router.post(
   placeController.createPlace
 );
 
-router.patch("/:uid", placeController.updatePlaceById);
+router.patch(
+  "/:uid",
+  [check("title").not().isEmpty(), check("description").isLength({ min: 5 })],
+  placeController.updatePlaceById
+);
 
 router.delete("/:uid", placeController.deletePlaceById);
 module.exports = router;
