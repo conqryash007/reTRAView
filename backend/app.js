@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const httpError = require("./models/http-error");
 const app = express();
 const placesRoute = require("./routes/places-routes");
@@ -22,4 +23,14 @@ app.use((error, req, res, next) => {
   res.json({ message: error.message || "Something went wrong !" });
 });
 
-app.listen(5000);
+mongoose
+  .connect(
+    "mongodb+srv://conqryash007:ZKVKYUd0nKjdPEwS@cluster0.fbbfu.mongodb.net/places?retryWrites=true&w=majority"
+  )
+  .then(() => {
+    app.listen(5000);
+    console.log("Server started successfully👍");
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
