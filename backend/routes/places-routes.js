@@ -18,10 +18,10 @@ router.post(
 );
 
 router.patch(
-  "/:uid",
+  "/:pid",
   [check("title").not().isEmpty(), check("description").isLength({ min: 5 })],
   placeController.updatePlaceById
 );
 
-router.delete("/:uid", placeController.deletePlaceById);
+router.delete("/:pid", placeController.deletePlaceById);
 module.exports = router;

@@ -1,92 +1,121 @@
 const httpError = require("./../models/http-error");
 const { validationResult } = require("express-validator");
+const Place = require("./../models/place");
 
-let USERS_DATA = [
-  {
-    name: "yash",
-    description: "fukachand",
-    id: "p1",
-    creator: "c1",
-  },
-  {
-    name: "ravan",
-    description: "",
-    id: "p2",
-    creator: "c2",
-  },
-];
+// function to get places by id
 
-exports.getPlaceById = (req, res, next) => {
-  const sendData = USERS_DATA.find((data) => {
-    return data.id === req.params.pid;
-  });
+exports.getPlaceById = async (req, res, next) => {
+  let sendData;
+  try {
+    sendData = await Place.findById(req.params.pid);
+  } catch (err) {
+    return next(new httpError("Something went wrong!", 500));
+  }
 
   if (!sendData) {
     return next(new httpError("Cannot find place id.", 404));
   }
 
-  res.json({ sendData });
+  res.json({ place: sendData.toObject({ getters: true }) });
 };
 
-exports.getPlacesByUser = (req, res, next) => {
-  const sendData = USERS_DATA.filter((data) => {
-    return data.creator === req.params.uid;
-  });
+// function to get places by id
+
+exports.getPlacesByUser = async (req, res, next) => {
+  let sendData;
+  try {
+    sendData = await Place.find({ creator: req.params.uid });
+  } catch (err) {
+    return next(new httpError("Something went wrong!", 500));
+  }
 
   if (!sendData || sendData.length === 0) {
     return next(new httpError("Cannot find place user id.", 404));
   }
 
-  res.json({ sendData });
+  res.json({ place: sendData.map((p) => p.toObject({ getters: true })) });
 };
 
-exports.createPlace = (req, res, next) => {
+// function to create place on db
+
+exports.createPlace = async (req, res, next) => {
   const error = validationResult(req);
   if (!error.isEmpty()) {
     return next(new httpError("Invalid input ,please check your data", 422));
   }
-  const { id, title, description, coordinate, address, creator } = req.body;
-  const data = {
+  const { title, description, address, creator } = req.body;
+
+  const coordinate = {
+    lat: 41.890251,
+    lng: 12.492373,
+  };
+
+  const createdPlace = new Place({
     title,
     description,
     location: coordinate,
     address,
     creator,
-    id,
-  };
+    image: "https://en.wikipedia.org/wiki/Colosseum#/media/File:Roma06(js).jpg",
+  });
 
-  USERS_DATA.push(data);
+  try {
+    createdPlace.save();
+  } catch (err) {
+    return next(new httpError(err.message, 500));
+  }
 
-  res.status(201).json({ data });
+  res.status(201).json({ place: createdPlace });
 };
 
-exports.updatePlaceById = (req, res, next) => {
+// function to update place on db
+
+exports.updatePlaceById = async (req, res, next) => {
   const error = validationResult(req);
   if (!error.isEmpty()) {
     return next(new httpError("Invalid input ,please check your data", 422));
   }
-  const id = req.params.uid;
+  const id = req.params.pid;
   const incData = req.body;
 
-  const place = {
-    ...USERS_DATA.find((curr) => {
-      return curr.id === id;
-    }),
-  };
-  const indx = USERS_DATA.findIndex((curr) => curr.id === id);
+  let place;
+  try {
+    place = await Place.findById(id);
+  } catch (err) {
+    return next(new httpError("Something went wrong!", 500));
+  }
   place.description = incData.description;
   place.title = incData.title;
-  USERS_DATA[indx] = place;
 
-  res.status(200).json({ place });
+  try {
+    await place.save();
+  } catch (err) {
+    return next(
+      new httpError("Something went wrong!, Couldn't update place", 500)
+    );
+  }
+
+  res.status(200).json({ place: place.toObject({ getters: true }) });
 };
 
-exports.deletePlaceById = (req, res, next) => {
-  const id = req.params.uid;
-  const indx = USERS_DATA.findIndex((curr) => curr.id === id);
-  if (indx === -1) {
-    return next(new httpError("id not found", 404));
+//function to delete place by id
+
+exports.deletePlaceById = async (req, res, next) => {
+  const id = req.params.pid;
+  let place;
+  try {
+    place = await Place.findById(id);
+  } catch (err) {
+    return next(new httpError("Something went wrong!", 500));
   }
-  USERS_DATA.splice(indx, 1);
+
+  try {
+    await place.remove();
+  } catch (err) {
+    return next(
+      new httpError("Something went wrong!, Couldn't update place", 500)
+    );
+  }
+
   res.status(200).json({ message: "deletion successful" });
 };
