@@ -1,6 +1,9 @@
 const httpError = require("./../models/http-error");
 const { validationResult } = require("express-validator");
 const Place = require("./../models/place");
+const User = require("./../models/user");
+
+const mongoose = require("mongoose");
 
 // function to get places by id
 
@@ -50,6 +53,23 @@ exports.createPlace = async (req, res, next) => {
     lng: 12.492373,
   };
 
+  //coordinates will come from react
+  // const { title, description, address, creator,cord } = req.body;
+  // const coordinate = cord ;
+
+  let user;
+  try {
+    user = await User.findById(creator);
+  } catch (err) {
+    return next(
+      new httpError("Something wen wrong with creation of place", 500)
+    );
+  }
+
+  if (!user) {
+    return next(new httpError("No creator found !", 500));
+  }
+
   const createdPlace = new Place({
     title,
     description,
@@ -60,7 +80,12 @@ exports.createPlace = async (req, res, next) => {
   });
 
   try {
-    createdPlace.save();
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await createdPlace.save({ session: sess });
+    await user.places.push(createdPlace);
+    await user.save({ session: sess });
+    await sess.commitTransaction();
   } catch (err) {
     return next(new httpError(err.message, 500));
   }
@@ -104,13 +129,22 @@ exports.deletePlaceById = async (req, res, next) => {
   const id = req.params.pid;
   let place;
   try {
-    place = await Place.findById(id);
+    place = await Place.findById(id).populate("creator");
   } catch (err) {
     return next(new httpError("Something went wrong!", 500));
   }
 
+  if (!place) {
+    return next(new httpError("Could not find the place !", 404));
+  }
+
   try {
-    await place.remove();
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await place.remove({ session: sess });
+    place.creator.places.pull(place);
+    await place.creator.save({ session: sess });
+    await sess.commitTransaction();
   } catch (err) {
     return next(
       new httpError("Something went wrong!, Couldn't update place", 500)

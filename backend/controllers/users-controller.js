@@ -2,21 +2,16 @@ const httpError = require("./../models/http-error");
 const User = require("./../models/user");
 const { validationResult } = require("express-validator");
 
-let USER_DUMMY = [
-  {
-    name: "Yash",
-    email: "ajsh@gmail.com",
-    password: "1234",
-  },
-  {
-    name: "Tinku",
-    email: "aasasjsh@gmail.com",
-    password: "4321",
-  },
-];
-
-exports.getUsers = (req, res) => {
-  res.status(200).json({ users: USER_DUMMY });
+exports.getUsers = async (req, res, next) => {
+  let users;
+  try {
+    users = await User.find({}, "-password");
+  } catch (err) {
+    return next(new httpError("Fetching user data failed !", 500));
+  }
+  res
+    .status(200)
+    .json({ users: users.map((u) => u.toObject({ getters: true })) });
 };
 
 exports.signUp = async (req, res, next) => {
@@ -24,7 +19,7 @@ exports.signUp = async (req, res, next) => {
   if (!errors.isEmpty()) {
     return next(new httpError("Something wrong in the input field", 422));
   }
-  const { name, email, password, places } = req.body;
+  const { name, email, password } = req.body;
 
   let existingUser;
   try {
@@ -42,7 +37,7 @@ exports.signUp = async (req, res, next) => {
     name,
     email,
     password,
-    places,
+    places: [],
     image: "https://static.toiimg.com/photo/83890830/83890830.jpg?v=3",
   });
 
@@ -55,11 +50,18 @@ exports.signUp = async (req, res, next) => {
   res.status(201).json({ user: newUser.toObject({ getters: true }) });
 };
 
-exports.logIn = (req, res, next) => {
+exports.logIn = async (req, res, next) => {
   const { email, password } = req.body;
-  const currUser = USER_DUMMY.find((curr) => curr.email === email);
+
+  let currUser;
+  try {
+    currUser = await User.findOne({ email: email });
+  } catch (err) {
+    return next(new httpError("Loggin in failed! Try again.", 500));
+  }
+
   if (!currUser || currUser.password !== password) {
-    return next(new httpError("Could not identify user !"));
+    return next(new httpError("Invalid credentials. Could not log in."));
   }
   res.json({ message: "Logged In" });
 };
