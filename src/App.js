@@ -1,12 +1,16 @@
 import React from "react";
-import Navbar from "./shared/components/Navbar/Navbar";
+import Users from "./users/pages/Users";
+import Newplace from "./places/pages/Newplace";
+
+import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <div>
-      <Navbar />
-      <h1>Hello From Yash</h1>
-    </div>
+    <Routes>
+      <Route path="/" element={<Users />} exact></Route>
+      <Route path="/places/new" element={<Newplace />} exact></Route>
+      {/* <useNavigate to="/"></useNavigate> */}
+    </Routes>
   );
 }
 

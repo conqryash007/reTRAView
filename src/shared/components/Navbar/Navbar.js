@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
-import Button from "@material-ui/core/Button";
+import NavLinks from "./NavLinks";
+import MenuIcon from "@mui/icons-material/Menu";
+import Sidedrawer from "./Sidedrawer";
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -13,37 +15,48 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  style: {
+    backgroundColor: "#000000",
+  },
 }));
 
 const Navbar = () => {
+  const [state, setState] = React.useState(false);
+
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+
+    setState(open);
+  };
+
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   return (
-    <AppBar position="static">
-      <Toolbar>
-        <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          className={classes.menuButton}
-        ></IconButton>
-        <Typography variant="h6" className={classes.title}>
-          Title
-        </Typography>
-        <Button color="inherit" onClick={handleOpen}>
-          Signup
-        </Button>
-      </Toolbar>
-    </AppBar>
+    <>
+      <Sidedrawer tDrawer={toggleDrawer} st={state} />
+      <AppBar position="static">
+        <Toolbar className={classes.style}>
+          <IconButton
+            onClick={toggleDrawer(true)}
+            size="large"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+            edge="start"
+          >
+            <MenuIcon></MenuIcon>
+          </IconButton>
+          <Typography variant="h6" className={classes.title}>
+            Project Noname
+          </Typography>
+          <NavLinks />
+        </Toolbar>
+      </AppBar>
+    </>
   );
 };
 
