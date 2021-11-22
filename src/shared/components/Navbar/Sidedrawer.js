@@ -15,6 +15,7 @@ export default function TemporaryDrawer(props) {
       onClick={props.tDrawer(false)}
       onKeyDown={props.tDrawer(false)}
     >
+      <Button style={{ marginLeft: "22px" }}>close</Button>
       <List>
         <ListItem>
           <NavLink to="/">

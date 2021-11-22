@@ -3,8 +3,8 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@mui/material/Grid";
 
@@ -18,12 +18,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function UserItem(props) {
+export default function PlaceItem(props) {
   const classes = useStyles();
-  const { id, image, name, placeCount } = props;
+  const { id, title, description, image, address, location } = props;
   return (
     <Grid item xs={12} sm={4} md={4}>
-      <Card sx={{ maxWidth: "350px" }}>
+      <Card sx={{ maxHeight: "400px", overflow: "auto", textAlign: "center" }}>
         <CardMedia
           component="img"
           height="220"
@@ -32,22 +32,22 @@ export default function UserItem(props) {
         />
         <CardContent className={classes.root}>
           <Typography gutterBottom variant="h5" component="div">
-            {name}
+            {title}
           </Typography>
           <Typography
             variant="body2"
             color="text.secondary"
             style={{ color: "white" }}
           >
-            ID : {id}
+            {address}
             <br />
-            Places : {placeCount}
+            {description}
           </Typography>
         </CardContent>
         <CardActions className={classes.root2}>
-          <Button href={`/${id}/places`} size="small">
-            Check Places
-          </Button>
+          <Button size="small">VIEW ON MAP</Button>
+          <Button size="small">EDIT</Button>
+          <Button size="small">DELETE</Button>
         </CardActions>
       </Card>
     </Grid>

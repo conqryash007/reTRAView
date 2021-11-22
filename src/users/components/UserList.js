@@ -6,11 +6,7 @@ import Grid from "@mui/material/Grid";
 export default function UserList(props) {
   return (
     <Container style={{ marginTop: "1rem" }}>
-      <Grid
-        container
-        spacing={{ xs: 2, md: 2 }}
-        columns={{ xs: 2, sm: 4, md: 12 }}
-      >
+      <Grid container spacing={{ xs: 2, md: 2 }}>
         {props.item.map((curr) => (
           <UserItem
             key={curr.id}
