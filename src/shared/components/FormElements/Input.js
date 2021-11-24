@@ -1,83 +1,57 @@
-import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core";
+import React, { useReducer, useEffect } from "react";
 import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+import { validate } from "./../../Utlis/validators";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: theme.spacing(2),
+const inputReducer = (state, action) => {
+  switch (action.type) {
+    case "CHANGE":
+      return {
+        ...state,
+        value: action.val,
+        isValid: validate(action.val, action.validator),
+      };
+    case "TOUCH":
+      return {
+        ...state,
+        isTouch: true,
+      };
+    default:
+      return state;
+  }
+};
 
-    "& .MuiTextField-root": {
-      backgroundColor: "rgb(255, 255, 255)",
-      margin: theme.spacing(1),
-      width: "40vw",
-      minWidth: "300px",
-    },
-    "& .MuiButtonBase-root": {
-      margin: theme.spacing(2),
-    },
-  },
-}));
+export default function Input(props) {
+  const { label, type, validator, onInput } = props;
+  const [inputState, dispatch] = useReducer(inputReducer, {
+    value: "",
+    isValid: false,
+    isTouch: false,
+  });
+  const { value, isValid } = inputState;
+  useEffect(() => {
+    onInput(label, value, isValid);
+  }, [label, value, isValid, onInput]);
 
-const Form = ({ handleClose }) => {
-  const classes = useStyles();
-  // create state variables for each input
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const inputHandler = (e) => {
+    dispatch({ val: e.target.value, type: "CHANGE", validator: validator });
+  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(firstName, lastName, email, password);
-    handleClose();
+  const touchHandler = () => {
+    dispatch({ type: "TOUCH" });
   };
 
   return (
-    <form className={classes.root} onSubmit={handleSubmit}>
+    <>
       <TextField
-        label="First Name"
+        label={label}
         variant="filled"
         required
-        value={firstName}
-        onChange={(e) => setFirstName(e.target.value)}
+        type={type}
+        error={!inputState.isValid && inputState.isTouch}
+        onChange={inputHandler}
+        onBlur={touchHandler}
+        value={inputState.value}
       />
-      <TextField
-        label="Last Name"
-        variant="filled"
-        required
-        value={lastName}
-        onChange={(e) => setLastName(e.target.value)}
-      />
-      <TextField
-        label="Email"
-        variant="filled"
-        type="email"
-        required
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <TextField
-        label="Password"
-        variant="filled"
-        type="password"
-        required
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <div>
-        <Button variant="contained" onClick={handleClose}>
-          Cancel
-        </Button>
-        <Button type="submit" variant="contained" color="primary">
-          Signup
-        </Button>
-      </div>
-    </form>
+    </>
   );
-};
-export default Form;
+}
