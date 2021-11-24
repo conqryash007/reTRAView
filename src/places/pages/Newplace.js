@@ -1,9 +1,12 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useReducer } from "react";
 import { makeStyles } from "@material-ui/core";
 import Input from "./../../shared/components/FormElements/Input";
 import Button from "@material-ui/core/Button";
 import Navbar from "./../../shared/components/Navbar/Navbar";
-import { VALIDATOR_REQUIRE } from "./../../shared/Utlis/validators";
+import {
+  VALIDATOR_REQUIRE,
+  VALIDATOR_MINLENGTH,
+} from "./../../shared/Utlis/validators";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,36 +28,86 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const formReducer = (state, action) => {
+  switch (action.type) {
+    case "INPUT_CHANGE":
+      let isFormValid = true;
+      for (let inputId in state.inputs) {
+        if (inputId === action.inputId) {
+          isFormValid = isFormValid && action.isValid;
+        } else {
+          isFormValid = isFormValid && state.inputs[inputId].isValid;
+        }
+      }
+      return {
+        ...state,
+        inputs: {
+          ...state.inputs,
+          [action.inputId]: {
+            value: action.value,
+            isValid: action.isValid,
+          },
+        },
+        isValid: isFormValid,
+      };
+    default:
+      return state;
+  }
+};
+
 const Form = () => {
   const classes = useStyles();
-  const titleInputHandler = useCallback((id, value, isValid) => {}, []);
+
+  const [formData, dispatch] = useReducer(formReducer, {
+    inputs: {
+      title: {
+        value: "",
+        isValid: false,
+      },
+      description: {
+        value: "",
+        isValid: false,
+      },
+    },
+    isValid: false,
+  });
+
+  const inputHandler = useCallback(
+    (id, value, isValid) => {
+      dispatch({ type: "INPUT_CHANGE", value: value, inputId: id, isValid });
+    },
+    [dispatch]
+  );
   return (
     <>
       <Navbar></Navbar>
+      {console.log(formData)}
       <h1 style={{ textAlign: "center", color: "white" }}>Add New Place</h1>
       <form className={classes.root}>
         <Input
           label="Title"
+          name="title"
           type="text"
           validator={[VALIDATOR_REQUIRE()]}
-          onInput={titleInputHandler}
+          onInput={inputHandler}
         ></Input>
         <Input
-          label="Last Name"
+          label="Description"
+          name="description"
           type="text"
-          validator={[VALIDATOR_REQUIRE()]}
-        />
-        <Input label="Email" type="email" validator={[VALIDATOR_REQUIRE()]} />
-        <Input
-          label="Password"
-          type="password"
-          validator={[VALIDATOR_REQUIRE()]}
+          validator={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(5)]}
+          onInput={inputHandler}
         />
         <div>
           <Button variant="contained" type="reset">
             Reset
           </Button>
-          <Button type="submit" variant="contained" color="primary">
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={!formData.isValid}
+          >
             Signup
           </Button>
         </div>

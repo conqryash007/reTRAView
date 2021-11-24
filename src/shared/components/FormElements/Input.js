@@ -21,7 +21,7 @@ const inputReducer = (state, action) => {
 };
 
 export default function Input(props) {
-  const { label, type, validator, onInput } = props;
+  const { label, type, validator, onInput, name } = props;
   const [inputState, dispatch] = useReducer(inputReducer, {
     value: "",
     isValid: false,
@@ -29,8 +29,8 @@ export default function Input(props) {
   });
   const { value, isValid } = inputState;
   useEffect(() => {
-    onInput(label, value, isValid);
-  }, [label, value, isValid, onInput]);
+    onInput(name, value, isValid);
+  }, [name, value, isValid, onInput]);
 
   const inputHandler = (e) => {
     dispatch({ val: e.target.value, type: "CHANGE", validator: validator });
