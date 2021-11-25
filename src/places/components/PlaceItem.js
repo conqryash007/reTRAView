@@ -10,6 +10,8 @@ import Grid from "@mui/material/Grid";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Map from "./../../shared/components/Maps/Map";
+import { Link } from "react-router-dom";
+import MuiModal from "./../../shared/MUIcomponent/MuiModal";
 
 const style = {
   position: "absolute",
@@ -41,6 +43,11 @@ export default function PlaceItem(props) {
   const handleClose = () => setOpen(false);
   const classes = useStyles();
   const { id, title, description, image, address, location } = props;
+
+  const [modalOpen, setmodalOpen] = React.useState(false);
+  const handlemodalOpen = () => setmodalOpen(true);
+  const handlemodalClose = () => setmodalOpen(false);
+
   return (
     <>
       <div>
@@ -59,6 +66,9 @@ export default function PlaceItem(props) {
           </Box>
         </Modal>
       </div>
+
+      <MuiModal modalOpen={modalOpen} handlemodalClose={handlemodalClose} />
+
       <Grid item xs={12} sm={4} md={4}>
         <Card
           sx={{ maxHeight: "400px", overflow: "auto", textAlign: "center" }}
@@ -87,8 +97,12 @@ export default function PlaceItem(props) {
             <Button size="small" onClick={handleOpen}>
               VIEW ON MAP
             </Button>
-            <Button size="small">EDIT</Button>
-            <Button size="small">DELETE</Button>
+            <Link to={`/places/${id}`}>
+              <Button size="small">EDIT</Button>
+            </Link>
+            <Button onClick={handlemodalOpen} size="small">
+              DELETE
+            </Button>
           </CardActions>
         </Card>
       </Grid>

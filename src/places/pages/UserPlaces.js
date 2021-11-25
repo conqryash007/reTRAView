@@ -7,7 +7,7 @@ export default function UserPlaces() {
     {
       id: "p1",
       title: "2334sssdsdsdsdasdaf",
-      description: "gol gol sa hai thoda side se tuta hai. khodki bhi hai",
+      description: "gol gol sa hai thoda side se tuta hai. ",
       image:
         "https://upload.wikimedia.org/wikipedia/commons/d/d1/Roma06%28js%29.jpg",
       address: "sdsd 343434 pe sadasdsadekhe hai",
@@ -16,8 +16,7 @@ export default function UserPlaces() {
     {
       id: "p2",
       title: "2334sssdsdsdsdasdaf",
-      description:
-        "gol gol sa hai tsdsdsddsdsda side se tuta hai. khodki bhi hai",
+      description: "gol gol sa hai tsdsdsddsdsda side se tuta hai. ",
       image:
         "https://upload.wikimedia.org/wikipedia/commons/d/d1/Roma06%28js%29.jpg",
       address: "sdsd 343434 pe sadasdsadekhe hai",

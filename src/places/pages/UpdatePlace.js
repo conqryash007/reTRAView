@@ -1,8 +1,8 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core";
+import Navbar from "../../shared/components/Navbar/Navbar";
 import Input from "./../../shared/components/FormElements/Input";
 import Button from "@material-ui/core/Button";
-import Navbar from "./../../shared/components/Navbar/Navbar";
 import {
   VALIDATOR_REQUIRE,
   VALIDATOR_MINLENGTH,
@@ -29,25 +29,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Form = () => {
+export default function UpdatePlace() {
   const classes = useStyles();
 
   const [formData, inputHandler] = useForm(
     {
       title: {
-        value: "",
+        value: "title from place in db",
         isValid: false,
       },
       description: {
-        value: "",
-        isValid: false,
-      },
-      address: {
-        value: "",
+        value: "description from place in db",
         isValid: false,
       },
     },
-    false
+    true
   );
 
   const submitFormHandler = (e) => {
@@ -57,8 +53,8 @@ const Form = () => {
 
   return (
     <>
-      <Navbar></Navbar>
-      <h1 style={{ textAlign: "center", color: "white" }}>Add New Place</h1>
+      <Navbar />
+      <h1 style={{ textAlign: "center", color: "white" }}>Update Place</h1>
       <form className={classes.root} onSubmit={submitFormHandler}>
         <Input
           label="Title"
@@ -68,20 +64,12 @@ const Form = () => {
           onInput={inputHandler}
         ></Input>
         <Input
-          label="Address"
-          name="address"
-          type="text"
-          validator={[VALIDATOR_REQUIRE()]}
-          onInput={inputHandler}
-        />
-        <Input
           label="Description"
           name="description"
           type="text"
           validator={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(5)]}
           onInput={inputHandler}
         />
-
         <div>
           <Button variant="contained" type="reset">
             Reset
@@ -98,5 +86,4 @@ const Form = () => {
       </form>
     </>
   );
-};
-export default Form;
+}
