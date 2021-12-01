@@ -1,5 +1,4 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const httpError = require("./models/http-error");
 const app = express();
 const placesRoute = require("./routes/places-routes");
@@ -23,12 +22,4 @@ app.use((error, req, res, next) => {
   res.json({ message: error.message || "Something went wrong !" });
 });
 
-mongoose
-  .connect("")
-  .then(() => {
-    app.listen(5000);
-    console.log("Server started successfully👍");
-  })
-  .catch((err) => {
-    console.log(err.message);
-  });
+module.exports = app;
