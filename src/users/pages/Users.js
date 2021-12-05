@@ -6,8 +6,8 @@ export default function Users() {
   const data = [
     {
       id: 1,
-      image: "https://randomuser.me/api/portraits/men/75.jpg",
-      name: "Yash Gupta",
+      image: "https://randomuser.me/api/portraits/women/95.jpg",
+      name: "Yaygyjta",
       placeCount: 4,
     },
     {
@@ -18,25 +18,25 @@ export default function Users() {
     },
     {
       id: 22,
-      image: "https://randomuser.me/api/portraits/men/35.jpg",
+      image: "https://randomuser.me/api/portraits/women/35.jpg",
       name: "sdsd Gupta",
       placeCount: 4,
     },
     {
       id: 23,
-      image: "https://randomuser.me/api/portraits/men/35.jpg",
+      image: "https://randomuser.me/api/portraits/men/25.jpg",
       name: "sdsd Gupta",
       placeCount: 4,
     },
     {
       id: 24,
-      image: "https://randomuser.me/api/portraits/men/35.jpg",
+      image: "https://randomuser.me/api/portraits/women/55.jpg",
       name: "sdsd Gupta",
       placeCount: 4,
     },
     {
       id: 25,
-      image: "https://randomuser.me/api/portraits/men/35.jpg",
+      image: "https://randomuser.me/api/portraits/men/5.jpg",
       name: "sdsd Gupta",
       placeCount: 4,
     },

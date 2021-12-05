@@ -7,6 +7,8 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@mui/material/Grid";
+import { AuthContext } from "./../../shared/context/auth-context";
+import { NavLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,6 +21,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function UserItem(props) {
+  const auth = React.useContext(AuthContext);
+
   const classes = useStyles();
   const { id, image, name, placeCount } = props;
   return (
@@ -44,11 +48,13 @@ export default function UserItem(props) {
             Places : {placeCount}
           </Typography>
         </CardContent>
-        <CardActions className={classes.root2}>
-          <Button href={`/${id}/places`} size="small">
-            Check Places
-          </Button>
-        </CardActions>
+        {auth.isLoggedIn && (
+          <CardActions className={classes.root2}>
+            <NavLink to={`/${id}/places`}>
+              <Button>Check Places</Button>
+            </NavLink>
+          </CardActions>
+        )}
       </Card>
     </Grid>
   );

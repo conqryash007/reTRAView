@@ -21,7 +21,7 @@ const inputReducer = (state, action) => {
 };
 
 export default function Input(props) {
-  const { label, type, validator, onInput, name } = props;
+  const { label, type, validator, onInput, name, val } = props;
   const [inputState, dispatch] = useReducer(inputReducer, {
     value: "",
     isValid: false,
@@ -50,7 +50,7 @@ export default function Input(props) {
         error={!inputState.isValid && inputState.isTouch}
         onChange={inputHandler}
         onBlur={touchHandler}
-        value={inputState.value}
+        value={val}
       />
     </>
   );

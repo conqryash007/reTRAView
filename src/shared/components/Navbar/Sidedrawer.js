@@ -7,8 +7,11 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { NavLink } from "react-router-dom";
 import Button from "@material-ui/core/Button";
+import { AuthContext } from "./../../context/auth-context";
 
 export default function TemporaryDrawer(props) {
+  const auth = React.useContext(AuthContext);
+
   const list = () => (
     <Box
       role="presentation"
@@ -22,25 +25,31 @@ export default function TemporaryDrawer(props) {
             <Button color="inherit">ALL USER</Button>
           </NavLink>
         </ListItem>
-        <ListItem>
-          <NavLink to="/u1/places">
-            <Button color="inherit">MY PLACES</Button>
-          </NavLink>
-        </ListItem>
-        <ListItem>
-          <NavLink to="/places/new">
-            <Button color="inherit">ADD PLACE</Button>
-          </NavLink>
-        </ListItem>
-        <ListItem>
-          <NavLink to="/auth">
-            <Button color="inherit">Authentication</Button>
-          </NavLink>
-        </ListItem>
+        {auth.isLoggedIn && (
+          <ListItem>
+            <NavLink to="/u1/places">
+              <Button color="inherit">MY PLACES</Button>
+            </NavLink>
+          </ListItem>
+        )}
+        {auth.isLoggedIn && (
+          <ListItem>
+            <NavLink to="/places/new">
+              <Button color="inherit">ADD PLACE</Button>
+            </NavLink>
+          </ListItem>
+        )}
+        {!auth.isLoggedIn && (
+          <ListItem>
+            <NavLink to="/auth">
+              <Button color="inherit">Authentication</Button>
+            </NavLink>
+          </ListItem>
+        )}
       </List>
       <Divider />
       <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
+        {["Contact", "Support", "Helpline 1234"].map((text, index) => (
           <ListItem button key={text}>
             <ListItemText primary={text} />
           </ListItem>
