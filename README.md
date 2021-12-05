@@ -1,2 +1,2 @@
 # reTRAView
-### A travellers place store and review website
+### A travel destination storing and reviewing website
