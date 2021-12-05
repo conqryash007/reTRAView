@@ -52,9 +52,29 @@ export default function Auth() {
     true
   );
 
-  const submitFormHandler = (e) => {
+  const submitFormHandler = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    if (isLogin) {
+    } else {
+      try {
+        const response = await fetch("http://localhost:5000/api/users/signup", {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          mode: "cors",
+          body: JSON.stringify({
+            name: formData.inputs.name.value,
+            password: formData.inputs.password.value,
+            email: formData.inputs.email.value,
+          }),
+        });
+        const resData = await response.json();
+        console.log(resData);
+      } catch (err) {
+        console.log(err);
+      }
+    }
     auth.logIn();
   };
 
@@ -116,7 +136,7 @@ export default function Auth() {
             color="primary"
             disabled={!formData.isValid}
           >
-            LOGIN
+            {isLogin ? "Sign Up" : "Log In"}
           </Button>
         </div>
       </form>
