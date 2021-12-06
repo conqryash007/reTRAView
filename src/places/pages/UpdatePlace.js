@@ -1,14 +1,31 @@
-import React from "react";
+import React, { useContext, useState } from "react";
+import { AuthContext } from "./../../shared/context/auth-context";
 import { makeStyles } from "@material-ui/core";
 import Navbar from "../../shared/components/Navbar/Navbar";
 import Input from "./../../shared/components/FormElements/Input";
 import Button from "@material-ui/core/Button";
+import { useHttp } from "./../../shared/hooks/http-hook";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import CircularProgress from "@mui/material/CircularProgress";
+
 import {
   VALIDATOR_REQUIRE,
   VALIDATOR_MINLENGTH,
 } from "./../../shared/Utlis/validators";
 import { useForm } from "./../../shared/hooks/form-hook";
-
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  textAlign: "center",
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -31,6 +48,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function UpdatePlace() {
   const classes = useStyles();
+  const auth = useContext(AuthContext);
+
+  const handleClose = () => setOpen(false);
+
+  const { loading, err, sendRequest, clearError } = useHttp();
+  const [open, setOpen] = useState(false);
 
   const [formData, inputHandler] = useForm(
     {
@@ -48,12 +71,44 @@ export default function UpdatePlace() {
 
   const submitFormHandler = (e) => {
     e.preventDefault();
-    console.log(formData);
+    setOpen(true);
+    clearError();
+    try {
+      sendRequest(
+        "http://localhost:5000/api/places",
+        "POST",
+        JSON.stringify({
+          title: formData.inputs.title.value,
+          description: formData.inputs.description.value,
+          address: formData.inputs.address.value,
+          creator: auth.userId,
+        }),
+        { "Content-Type": "application/json" }
+      );
+    } catch (err) {}
+    setOpen(false);
   };
 
   return (
     <>
       <Navbar />
+      <Modal
+        onClose={handleClose}
+        open={open}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          {loading ? (
+            <>
+              <CircularProgress sx={{ margin: "auto", width: "200px" }} />
+              <h2>IN PROGRESS...</h2>
+            </>
+          ) : null}
+          {open && err}
+          {err && <h1>Please try again.</h1>}
+        </Box>
+      </Modal>
       <h1 style={{ textAlign: "center", color: "white" }}>Update Place</h1>
       <form className={classes.root} onSubmit={submitFormHandler}>
         <Input
@@ -71,16 +126,13 @@ export default function UpdatePlace() {
           onInput={inputHandler}
         />
         <div>
-          <Button variant="contained" type="reset">
-            Reset
-          </Button>
           <Button
             type="submit"
             variant="contained"
             color="primary"
             disabled={!formData.isValid}
           >
-            Signup
+            Update PLACE
           </Button>
         </div>
       </form>

@@ -10,12 +10,16 @@ import { Routes, Route } from "react-router-dom";
 
 function App() {
   const [logged, setLogged] = useState(false);
+  const [userId, setuserId] = useState(null);
+  console.log(userId, logged);
 
-  const login = () => {
+  const login = (id) => {
     setLogged(true);
+    setuserId(id);
   };
   const logout = () => {
     setLogged(false);
+    setuserId(null);
   };
 
   let route;
@@ -34,13 +38,19 @@ function App() {
       <>
         <Route path="/" element={<Users />} exact></Route>
         <Route path="/auth" element={<Auth />} exact></Route>
+        <Route path="/places/new" element={<Auth />} exact></Route>
       </>
     );
   }
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn: logged, logIn: login, logOut: logout }}
+      value={{
+        isLoggedIn: logged,
+        userId: userId,
+        logIn: login,
+        logOut: logout,
+      }}
     >
       <Routes>{route}</Routes>
     </AuthContext.Provider>

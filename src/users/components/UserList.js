@@ -13,7 +13,7 @@ export default function UserList(props) {
             id={curr.id}
             image={curr.image}
             name={curr.name}
-            placeCount={curr.placeCount}
+            placeCount={curr.places.length}
           />
         ))}
       </Grid>

@@ -43,17 +43,12 @@ export default function TransitionsModal(props) {
               The places removed cannot be reverted back.
             </Typography>
             <Stack direction="row" spacing={2} style={{ marginTop: "1rem" }}>
-              <Button
-                variant="outlined"
-                onClick={handlemodalClose}
-                size="small"
-              >
+              <Button variant="outlined" onClick={handlemodalClose}>
                 CANCEL
               </Button>
               <Button
                 variant="outlined"
                 onClick={handlemodalClose}
-                size="small"
                 color="error"
               >
                 DELETE

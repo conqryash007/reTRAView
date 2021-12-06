@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext, useState } from "react";
+import { AuthContext } from "./../../shared/context/auth-context";
 import { makeStyles } from "@material-ui/core";
 import Input from "./../../shared/components/FormElements/Input";
 import Button from "@material-ui/core/Button";
@@ -8,7 +9,24 @@ import {
   VALIDATOR_MINLENGTH,
 } from "./../../shared/Utlis/validators";
 import { useForm } from "./../../shared/hooks/form-hook";
+import { useHttp } from "./../../shared/hooks/http-hook";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useNavigate } from "react-router-dom";
 
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  textAlign: "center",
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -30,6 +48,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Form = () => {
+  const handleClose = () => setOpen(false);
+
+  const { loading, err, sendRequest, clearError } = useHttp();
+  const [open, setOpen] = useState(false);
+  const auth = useContext(AuthContext);
   const classes = useStyles();
 
   const [formData, inputHandler] = useForm(
@@ -49,16 +72,49 @@ const Form = () => {
     },
     false
   );
-
-  const submitFormHandler = (e) => {
+  const navigate = useNavigate();
+  const submitFormHandler = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    setOpen(true);
+    clearError();
+    try {
+      await sendRequest(
+        "http://localhost:5000/api/places",
+        "POST",
+        JSON.stringify({
+          title: formData.inputs.title.value,
+          description: formData.inputs.description.value,
+          address: formData.inputs.address.value,
+          creator: auth.userId,
+        }),
+        { "Content-Type": "application/json" }
+      );
+      setOpen(false);
+      navigate("/");
+    } catch (err) {}
   };
 
   return (
     <>
       <Navbar></Navbar>
       <h1 style={{ textAlign: "center", color: "white" }}>Add New Place</h1>
+      <Modal
+        onClose={handleClose}
+        open={open}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          {loading ? (
+            <>
+              <CircularProgress sx={{ margin: "auto", width: "200px" }} />
+              <h2>IN PROGRESS...</h2>
+            </>
+          ) : null}
+          {open && err}
+          {err && <h1>Please try again.</h1>}
+        </Box>
+      </Modal>
       <form className={classes.root} onSubmit={submitFormHandler}>
         <Input
           label="Title"
@@ -83,16 +139,13 @@ const Form = () => {
         />
 
         <div>
-          <Button variant="contained" type="reset">
-            Reset
-          </Button>
           <Button
             type="submit"
             variant="contained"
             color="primary"
             disabled={!formData.isValid}
           >
-            Signup
+            Add Place
           </Button>
         </div>
       </form>

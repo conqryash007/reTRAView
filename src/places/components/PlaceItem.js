@@ -94,15 +94,11 @@ export default function PlaceItem(props) {
             </Typography>
           </CardContent>
           <CardActions className={classes.root2}>
-            <Button size="small" onClick={handleOpen}>
-              VIEW ON MAP
-            </Button>
+            <Button onClick={handleOpen}>VIEW ON MAP</Button>
             <Link to={`/places/${id}`}>
-              <Button size="small">EDIT</Button>
+              <Button>EDIT</Button>
             </Link>
-            <Button onClick={handlemodalOpen} size="small">
-              DELETE
-            </Button>
+            <Button onClick={handlemodalOpen}>DELETE</Button>
           </CardActions>
         </Card>
       </Grid>

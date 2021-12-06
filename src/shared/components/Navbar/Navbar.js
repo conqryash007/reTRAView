@@ -42,7 +42,6 @@ const Navbar = () => {
         <Toolbar className={classes.style}>
           <IconButton
             onClick={toggleDrawer(true)}
-            size="large"
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}

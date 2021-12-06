@@ -3,6 +3,11 @@ import { makeStyles } from "@material-ui/core";
 import Navbar from "../../shared/components/Navbar/Navbar";
 import Input from "./../../shared/components/FormElements/Input";
 import Button from "@material-ui/core/Button";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
+import Modal from "@mui/material/Modal";
+import { useHttp } from "./../../shared/hooks/http-hook";
+
 import {
   VALIDATOR_REQUIRE,
   VALIDATOR_MINLENGTH,
@@ -31,12 +36,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  textAlign: "center",
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
 export default function Auth() {
   const auth = useContext(AuthContext);
 
   const classes = useStyles();
+  const handleClose = () => setOpen(false);
 
   const [isLogin, setIsLogin] = useState(true);
+  const [open, setOpen] = useState(false);
+
+  const { loading, err, sendRequest, clearError } = useHttp();
 
   const [formData, inputHandler, setFormData] = useForm(
     {
@@ -54,28 +76,46 @@ export default function Auth() {
 
   const submitFormHandler = async (e) => {
     e.preventDefault();
+    clearError();
+    setOpen(true);
     if (isLogin) {
+      try {
+        const reqData = await sendRequest(
+          "http://localhost:5000/api/users/login",
+          "post",
+          JSON.stringify({
+            password: formData.inputs.password.value,
+            email: formData.inputs.email.value,
+          }),
+          {
+            "Content-Type": "application/json",
+          }
+        );
+        setOpen(false);
+        auth.logIn(reqData.user.id);
+      } catch (err) {
+        console.log("Error occured!");
+      }
     } else {
       try {
-        const response = await fetch("http://localhost:5000/api/users/signup", {
-          method: "post",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          mode: "cors",
-          body: JSON.stringify({
+        const reqData = await sendRequest(
+          "http://localhost:5000/api/users/signup",
+          "post",
+          JSON.stringify({
             name: formData.inputs.name.value,
             password: formData.inputs.password.value,
             email: formData.inputs.email.value,
           }),
-        });
-        const resData = await response.json();
-        console.log(resData);
+          {
+            "Content-Type": "application/json",
+          }
+        );
+        setOpen(false);
+        auth.logIn(reqData.user.id);
       } catch (err) {
-        console.log(err);
+        console.log("Error occured!");
       }
     }
-    auth.logIn();
   };
 
   const switchForm = () => {
@@ -93,12 +133,31 @@ export default function Auth() {
     setIsLogin((prev) => !prev);
   };
 
+  style.backgroundColor = err ? "red" : "green";
+
   return (
     <>
       <Navbar />
       <h1 style={{ textAlign: "center", color: "white" }}>
         USER AUTHENTICATION
       </h1>
+      <Modal
+        onClose={handleClose}
+        open={open}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          {loading ? (
+            <>
+              <CircularProgress sx={{ margin: "auto", width: "200px" }} />
+              <h2>IN PROGRESS...</h2>
+            </>
+          ) : null}
+          {open && err}
+          {err && <h1>Please sign up again.</h1>}
+        </Box>
+      </Modal>
       <form className={classes.root} onSubmit={submitFormHandler}>
         {!isLogin && (
           <Input
@@ -136,7 +195,7 @@ export default function Auth() {
             color="primary"
             disabled={!formData.isValid}
           >
-            {isLogin ? "Sign Up" : "Log In"}
+            {!isLogin ? "Sign Up" : "Log In"}
           </Button>
         </div>
       </form>
