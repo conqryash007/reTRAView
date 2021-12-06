@@ -50,7 +50,7 @@ const Navbar = () => {
             <MenuIcon></MenuIcon>
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            Project Noname
+            reTRAView
           </Typography>
           <NavLinks />
         </Toolbar>

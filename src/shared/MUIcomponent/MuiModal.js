@@ -6,6 +6,8 @@ import Fade from "@mui/material/Fade";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
+import { useHttp } from "./../hooks/http-hook";
+import { useNavigate } from "react-router";
 
 const style = {
   color: "white",
@@ -20,7 +22,19 @@ const style = {
 };
 
 export default function TransitionsModal(props) {
+  const navigate = useNavigate();
   const { modalOpen, handlemodalClose } = props;
+  const pid = props.pid;
+  const { sendRequest, clearError } = useHttp();
+
+  const submitDeleteReq = async () => {
+    clearError();
+    try {
+      await sendRequest(`http://localhost:5000/api/places/${pid}`, "DELETE");
+      navigate("/");
+    } catch (err) {}
+  };
+
   return (
     <div>
       <Modal
@@ -48,7 +62,7 @@ export default function TransitionsModal(props) {
               </Button>
               <Button
                 variant="outlined"
-                onClick={handlemodalClose}
+                onClick={submitDeleteReq}
                 color="error"
               >
                 DELETE

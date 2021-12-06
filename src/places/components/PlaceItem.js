@@ -67,7 +67,11 @@ export default function PlaceItem(props) {
         </Modal>
       </div>
 
-      <MuiModal modalOpen={modalOpen} handlemodalClose={handlemodalClose} />
+      <MuiModal
+        pid={id}
+        modalOpen={modalOpen}
+        handlemodalClose={handlemodalClose}
+      />
 
       <Grid item xs={12} sm={4} md={4}>
         <Card
@@ -81,7 +85,7 @@ export default function PlaceItem(props) {
           />
           <CardContent className={classes.root}>
             <Typography gutterBottom variant="h5" component="div">
-              {id}. {title}
+              {title}
             </Typography>
             <Typography
               variant="body2"

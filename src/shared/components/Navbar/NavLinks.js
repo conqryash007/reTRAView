@@ -12,7 +12,7 @@ export default function NavLinks() {
         <Button color="inherit">ALL USER</Button>
       </NavLink>
       {auth.isLoggedIn && (
-        <NavLink to="/u1/places">
+        <NavLink to={`/${auth.userId}/places`}>
           <Button color="inherit">MY PLACES</Button>
         </NavLink>
       )}

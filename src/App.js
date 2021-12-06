@@ -38,7 +38,11 @@ function App() {
       <>
         <Route path="/" element={<Users />} exact></Route>
         <Route path="/auth" element={<Auth />} exact></Route>
+
+        {/* these will be removed after implementing auto login */}
         <Route path="/places/new" element={<Auth />} exact></Route>
+        <Route path="/:userId/places" element={<Auth />} exact></Route>
+        <Route path="/places/:placeId" element={<Auth />} exact></Route>
       </>
     );
   }

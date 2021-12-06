@@ -7,7 +7,7 @@ export default function PlaceList(props) {
   if (props.items.length === 0) {
     return (
       <Container>
-        <h1>NO USER FOUND</h1>
+        <h1 style={{ margin: "auto" }}>NO PLACE RELATED TO USER FOUND</h1>
       </Container>
     );
   }

@@ -27,7 +27,7 @@ export default function TemporaryDrawer(props) {
         </ListItem>
         {auth.isLoggedIn && (
           <ListItem>
-            <NavLink to="/u1/places">
+            <NavLink to={`/${auth.userId}/places`}>
               <Button color="inherit">MY PLACES</Button>
             </NavLink>
           </ListItem>

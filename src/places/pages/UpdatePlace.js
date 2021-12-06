@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import { AuthContext } from "./../../shared/context/auth-context";
+import React, { useState } from "react";
+// import { AuthContext } from "./../../shared/context/auth-context";
 import { makeStyles } from "@material-ui/core";
 import Navbar from "../../shared/components/Navbar/Navbar";
 import Input from "./../../shared/components/FormElements/Input";
@@ -8,6 +8,8 @@ import { useHttp } from "./../../shared/hooks/http-hook";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useParams } from "react-router";
+import { useNavigate } from "react-router";
 
 import {
   VALIDATOR_REQUIRE,
@@ -47,8 +49,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function UpdatePlace() {
+  const pid = useParams().placeId;
   const classes = useStyles();
-  const auth = useContext(AuthContext);
+  const navigate = useNavigate();
+  // const auth = useContext(AuthContext);
 
   const handleClose = () => setOpen(false);
 
@@ -69,24 +73,23 @@ export default function UpdatePlace() {
     true
   );
 
-  const submitFormHandler = (e) => {
+  const submitFormHandler = async (e) => {
     e.preventDefault();
     setOpen(true);
     clearError();
     try {
-      sendRequest(
-        "http://localhost:5000/api/places",
-        "POST",
+      await sendRequest(
+        `http://localhost:5000/api/places/${pid}`,
+        "PATCH",
         JSON.stringify({
           title: formData.inputs.title.value,
           description: formData.inputs.description.value,
-          address: formData.inputs.address.value,
-          creator: auth.userId,
         }),
         { "Content-Type": "application/json" }
       );
+      setOpen(false);
+      navigate("/");
     } catch (err) {}
-    setOpen(false);
   };
 
   return (
