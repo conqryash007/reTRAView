@@ -7,7 +7,7 @@ import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import Modal from "@mui/material/Modal";
 import { useHttp } from "./../../shared/hooks/http-hook";
-
+import ImageUpload from "./../../shared/components/ImageUpload";
 import {
   VALIDATOR_REQUIRE,
   VALIDATOR_MINLENGTH,
@@ -98,17 +98,15 @@ export default function Auth() {
       }
     } else {
       try {
+        const formdata = new FormData();
+        formdata.append("name", formData.inputs.name.value);
+        formdata.append("password", formData.inputs.password.value);
+        formdata.append("email", formData.inputs.email.value);
+        formdata.append("image", formData.inputs.image.value);
         const reqData = await sendRequest(
           "http://localhost:5000/api/users/signup",
           "post",
-          JSON.stringify({
-            name: formData.inputs.name.value,
-            password: formData.inputs.password.value,
-            email: formData.inputs.email.value,
-          }),
-          {
-            "Content-Type": "application/json",
-          }
+          formdata
         );
         setOpen(false);
         auth.logIn(reqData.user.id);
@@ -121,12 +119,16 @@ export default function Auth() {
   const switchForm = () => {
     if (!isLogin) {
       setFormData(
-        { ...formData, name: undefined },
+        { ...formData, name: undefined, image: undefined },
         formData.inputs.email.isvalid && formData.inputs.password.isvalid
       );
     } else {
       setFormData(
-        { ...formData.inputs, name: { value: "", isValid: false } },
+        {
+          ...formData.inputs,
+          name: { value: "", isValid: false },
+          image: { value: null, isValid: false },
+        },
         false
       );
     }
@@ -177,6 +179,9 @@ export default function Auth() {
           onInput={inputHandler}
           val={formData.email}
         ></Input>
+        {!isLogin && (
+          <ImageUpload id="image" onInput={inputHandler}></ImageUpload>
+        )}
         <Input
           label="Password"
           name="password"
