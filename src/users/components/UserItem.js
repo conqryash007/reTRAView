@@ -31,7 +31,7 @@ export default function UserItem(props) {
         <CardMedia
           component="img"
           height="220"
-          image={image}
+          image={`http://localhost:5000/${image}`}
           alt="user image"
         />
         <CardContent className={classes.root}>

@@ -8,8 +8,10 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { useHttp } from "./../hooks/http-hook";
 import { useNavigate } from "react-router";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const style = {
+  textAlign: "center",
   color: "white",
   position: "absolute",
   top: "50%",
@@ -26,51 +28,80 @@ export default function TransitionsModal(props) {
   const { modalOpen, handlemodalClose } = props;
   const pid = props.pid;
   const { sendRequest, clearError } = useHttp();
+  const [op, setOp] = React.useState(false);
 
   const submitDeleteReq = async () => {
     clearError();
     try {
+      setOp(true);
       await sendRequest(`http://localhost:5000/api/places/${pid}`, "DELETE");
+      setOp(false);
       navigate("/");
     } catch (err) {}
   };
 
   return (
     <div>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={modalOpen}
-        onClose={handlemodalClose}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={modalOpen}>
-          <Box sx={style}>
-            <Typography id="transition-modal-title" variant="h6" component="h2">
-              Are you sure you want to DELETE the place!
-            </Typography>
-            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-              The places removed cannot be reverted back.
-            </Typography>
-            <Stack direction="row" spacing={2} style={{ marginTop: "1rem" }}>
-              <Button variant="outlined" onClick={handlemodalClose}>
-                CANCEL
-              </Button>
-              <Button
-                variant="outlined"
-                onClick={submitDeleteReq}
-                color="error"
+      {op ? (
+        <>
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            open={op}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+            <Fade in={modalOpen}>
+              <Box sx={style}>
+                <CircularProgress sx={{ margin: "auto", width: "200px" }} />
+                <h2>IN PROGRESS...</h2>
+              </Box>
+            </Fade>
+          </Modal>
+        </>
+      ) : (
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          open={modalOpen}
+          onClose={handlemodalClose}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={modalOpen}>
+            <Box sx={style}>
+              <Typography
+                id="transition-modal-title"
+                variant="h6"
+                component="h2"
               >
-                DELETE
-              </Button>
-            </Stack>
-          </Box>
-        </Fade>
-      </Modal>
+                Are you sure you want to DELETE the place!
+              </Typography>
+              <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+                The places removed cannot be reverted back.
+              </Typography>
+              <Stack direction="row" spacing={2} style={{ marginTop: "1rem" }}>
+                <Button variant="outlined" onClick={handlemodalClose}>
+                  CANCEL
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={submitDeleteReq}
+                  color="error"
+                >
+                  DELETE
+                </Button>
+              </Stack>
+            </Box>
+          </Fade>
+        </Modal>
+      )}
     </div>
   );
 }

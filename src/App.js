@@ -11,7 +11,6 @@ import { Routes, Route } from "react-router-dom";
 function App() {
   const [logged, setLogged] = useState(false);
   const [userId, setuserId] = useState(null);
-  console.log(userId, logged);
 
   const login = (id) => {
     setLogged(true);

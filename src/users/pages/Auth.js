@@ -82,7 +82,7 @@ export default function Auth() {
       try {
         const reqData = await sendRequest(
           "http://localhost:5000/api/users/login",
-          "post",
+          "POST",
           JSON.stringify({
             password: formData.inputs.password.value,
             email: formData.inputs.email.value,
@@ -105,7 +105,7 @@ export default function Auth() {
         formdata.append("image", formData.inputs.image.value);
         const reqData = await sendRequest(
           "http://localhost:5000/api/users/signup",
-          "post",
+          "POST",
           formdata
         );
         setOpen(false);

@@ -8,6 +8,7 @@ import {
   VALIDATOR_REQUIRE,
   VALIDATOR_MINLENGTH,
 } from "./../../shared/Utlis/validators";
+import ImageUpload from "../../shared/components/ImageUpload";
 import { useForm } from "./../../shared/hooks/form-hook";
 import { useHttp } from "./../../shared/hooks/http-hook";
 import Box from "@mui/material/Box";
@@ -78,17 +79,13 @@ const Form = () => {
     setOpen(true);
     clearError();
     try {
-      await sendRequest(
-        "http://localhost:5000/api/places",
-        "POST",
-        JSON.stringify({
-          title: formData.inputs.title.value,
-          description: formData.inputs.description.value,
-          address: formData.inputs.address.value,
-          creator: auth.userId,
-        }),
-        { "Content-Type": "application/json" }
-      );
+      const formdata = new FormData();
+      formdata.append("title", formData.inputs.title.value);
+      formdata.append("description", formData.inputs.description.value);
+      formdata.append("address", formData.inputs.address.value);
+      formdata.append("image", formData.inputs.image.value);
+      formdata.append("creator", auth.userId);
+      await sendRequest("http://localhost:5000/api/places", "POST", formdata);
       setOpen(false);
       navigate("/");
     } catch (err) {}
@@ -123,6 +120,7 @@ const Form = () => {
           validator={[VALIDATOR_REQUIRE()]}
           onInput={inputHandler}
         ></Input>
+        <ImageUpload id="image" onInput={inputHandler} />
         <Input
           label="Address"
           name="address"
