@@ -92,7 +92,7 @@ export default function Auth() {
           }
         );
         setOpen(false);
-        auth.logIn(reqData.user.id);
+        auth.logIn(reqData.userId, reqData.token, null);
       } catch (err) {
         console.log("Error occured!");
       }
@@ -109,7 +109,7 @@ export default function Auth() {
           formdata
         );
         setOpen(false);
-        auth.logIn(reqData.user.id);
+        auth.logIn(reqData.userId, reqData.token);
       } catch (err) {
         console.log("Error occured!");
       }

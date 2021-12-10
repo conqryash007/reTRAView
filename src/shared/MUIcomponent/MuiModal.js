@@ -9,6 +9,7 @@ import Stack from "@mui/material/Stack";
 import { useHttp } from "./../hooks/http-hook";
 import { useNavigate } from "react-router";
 import CircularProgress from "@mui/material/CircularProgress";
+import { AuthContext } from "./../context/auth-context";
 
 const style = {
   textAlign: "center",
@@ -24,6 +25,7 @@ const style = {
 };
 
 export default function TransitionsModal(props) {
+  const auth = React.useContext(AuthContext);
   const navigate = useNavigate();
   const { modalOpen, handlemodalClose } = props;
   const pid = props.pid;
@@ -34,7 +36,14 @@ export default function TransitionsModal(props) {
     clearError();
     try {
       setOp(true);
-      await sendRequest(`http://localhost:5000/api/places/${pid}`, "DELETE");
+      await sendRequest(
+        `http://localhost:5000/api/places/${pid}`,
+        "DELETE",
+        null,
+        {
+          Authorization: `Bearer ${auth.token}`,
+        }
+      );
       setOp(false);
       navigate("/");
     } catch (err) {}

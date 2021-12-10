@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-// import { AuthContext } from "./../../shared/context/auth-context";
+import React, { useState, useContext } from "react";
+import { AuthContext } from "./../../shared/context/auth-context";
 import { makeStyles } from "@material-ui/core";
 import Navbar from "../../shared/components/Navbar/Navbar";
 import Input from "./../../shared/components/FormElements/Input";
@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function UpdatePlace() {
+  const auth = useContext(AuthContext);
   const pid = useParams().placeId;
   const classes = useStyles();
   const navigate = useNavigate();
@@ -85,7 +86,10 @@ export default function UpdatePlace() {
           title: formData.inputs.title.value,
           description: formData.inputs.description.value,
         }),
-        { "Content-Type": "application/json" }
+        {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`,
+        }
       );
       setOpen(false);
       navigate("/");
