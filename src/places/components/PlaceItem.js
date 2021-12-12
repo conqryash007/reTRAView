@@ -80,7 +80,7 @@ export default function PlaceItem(props) {
           <CardMedia
             component="img"
             height="220"
-            image={`http://localhost:5000/${image}`}
+            image={`${process.env.REACT_APP_ASSET_URL}/${image}`}
             alt="user image"
           />
           <CardContent className={classes.root}>

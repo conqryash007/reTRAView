@@ -15,7 +15,7 @@ export default function UserPlaces() {
     const fet = async () => {
       try {
         const plac = await sendRequest(
-          `http://localhost:5000/api/places/users/${userId}`
+          `${process.env.REACT_APP_BACKEND_URL}/places/users/${userId}`
         );
         setLoadedPlace(plac.place);
       } catch (err) {}

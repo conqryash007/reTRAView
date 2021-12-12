@@ -12,7 +12,9 @@ export default function Users() {
     clearError();
     const fetchUser = async () => {
       try {
-        const userData = await sendRequest("http://localhost:5000/api/users");
+        const userData = await sendRequest(
+          `${process.env.REACT_APP_BACKEND_URL}/users`
+        );
         setData(userData.users);
       } catch (err) {
         console.log("Error in user");

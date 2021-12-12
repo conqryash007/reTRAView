@@ -81,7 +81,7 @@ export default function Auth() {
     if (isLogin) {
       try {
         const reqData = await sendRequest(
-          "http://localhost:5000/api/users/login",
+          process.env.REACT_APP_BACKEND_URL + "/users/login",
           "POST",
           JSON.stringify({
             password: formData.inputs.password.value,
@@ -104,14 +104,14 @@ export default function Auth() {
         formdata.append("email", formData.inputs.email.value);
         formdata.append("image", formData.inputs.image.value);
         const reqData = await sendRequest(
-          "http://localhost:5000/api/users/signup",
+          process.env.REACT_APP_BACKEND_URL + "/users/signup",
           "POST",
           formdata
         );
         setOpen(false);
         auth.logIn(reqData.userId, reqData.token);
       } catch (err) {
-        console.log("Error occured!");
+        console.log(err);
       }
     }
   };

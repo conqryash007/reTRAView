@@ -80,7 +80,7 @@ export default function UpdatePlace() {
     clearError();
     try {
       await sendRequest(
-        `http://localhost:5000/api/places/${pid}`,
+        `${process.env.REACT_APP_BACKEND_URL}/places/${pid}`,
         "PATCH",
         JSON.stringify({
           title: formData.inputs.title.value,

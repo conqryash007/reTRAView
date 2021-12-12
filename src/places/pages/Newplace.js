@@ -85,9 +85,14 @@ const Form = () => {
       formdata.append("address", formData.inputs.address.value);
       formdata.append("image", formData.inputs.image.value);
       formdata.append("creator", auth.userId);
-      await sendRequest("http://localhost:5000/api/places", "POST", formdata, {
-        Authorization: `Bearer ${auth.token}`,
-      });
+      await sendRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/places`,
+        "POST",
+        formdata,
+        {
+          Authorization: `Bearer ${auth.token}`,
+        }
+      );
       setOpen(false);
       navigate("/");
     } catch (err) {}

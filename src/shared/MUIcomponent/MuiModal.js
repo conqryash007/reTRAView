@@ -37,7 +37,7 @@ export default function TransitionsModal(props) {
     try {
       setOp(true);
       await sendRequest(
-        `http://localhost:5000/api/places/${pid}`,
+        `${process.env.REACT_APP_BACKEND_URL}/places/${pid}`,
         "DELETE",
         null,
         {
